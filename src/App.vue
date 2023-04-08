@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, toRaw } from "vue";
 import Artplayer from "./components/Artplayer.vue";
 import artplayerPluginDanmuku from 'artplayer-plugin-danmuku'
 
@@ -45,27 +45,28 @@ function playM3u8(video, url, art) {
   }
 }
 
-const option = reactive({
+const option = {
   customType: {
     m3u8: playM3u8,
     flv: playFlv,
   },
   plugins: [],
-})
+};
 
 const style = reactive({
   height: '550px'
 })
 
 function loadDm(danmuku) {
-  if (art.plugins.artplayerPluginDanmuku) {
-    art.plugins.artplayerPluginDanmuku.config({
+  const plugins = toRaw(art.plugins);
+  if (plugins.artplayerPluginDanmuku) {
+    plugins.artplayerPluginDanmuku.config({
       danmuku: danmuku,
     });
-    art.plugins.artplayerPluginDanmuku.load();
+    plugins.artplayerPluginDanmuku.load();
     return;
   }
-  art.plugins.add(artplayerPluginDanmuku({
+  plugins.add(artplayerPluginDanmuku({
     // 弹幕数组
     danmuku: danmuku,
     speed: 3,
@@ -77,6 +78,9 @@ function loadDm(danmuku) {
 }
 
 const play = function () {
+  if (art.url === model.videoUrl) {
+    return false;
+  }
   // 识别视频类型
   if (model.videoUrl.endsWith('.mp4')) {
     art.type = 'mp4';
@@ -84,7 +88,10 @@ const play = function () {
   if (model.videoUrl.endsWith('.flv')) {
     art.type = 'flv';
   }
-  art.url = model.videoUrl;
+  art.pause();
+  setTimeout(() => {
+    art.url = model.videoUrl;
+  }, 500)
   if (!model.dmUrl) {
     return false;
   }
@@ -109,11 +116,10 @@ function getArtInstance(instance) {
     art.play();
   });
   art.on('restart', () => {
-    art.seek = 0;
+    console.info('restart');
     art.play();
   });
   art.on('url', (url) => {
-    art.pause();
     art.notice.show = '视频加载中......';
 });
 }
