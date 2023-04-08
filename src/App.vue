@@ -1,7 +1,6 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import Artplayer from "./components/Artplayer.vue";
-import { layer } from '@layui/layer-vue';
 import artplayerPluginDanmuku from 'artplayer-plugin-danmuku'
 
 
@@ -85,9 +84,7 @@ const play = function () {
   if (model.videoUrl.endsWith('.flv')) {
     art.type = 'flv';
   }
-  art.seek = 0;
   art.url = model.videoUrl;
-  art.notice.show = '视频加载中......';
   if (!model.dmUrl) {
     return false;
   }
@@ -111,11 +108,14 @@ function getArtInstance(instance) {
     console.info(art.hls);
     art.play();
   });
+  art.on('restart', () => {
+    art.seek = 0;
+    art.play();
+  });
+  art.on('url', (url) => {
+    art.notice.show = '视频加载中......';
+});
 }
-
-onMounted(() => {
-
-})
 
 </script>
 
