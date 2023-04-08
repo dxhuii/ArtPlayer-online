@@ -113,6 +113,7 @@ function getArtInstance(instance) {
     art.play();
   });
   art.on('url', (url) => {
+    art.pause();
     art.notice.show = '视频加载中......';
 });
 }
