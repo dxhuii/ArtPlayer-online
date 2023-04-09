@@ -1,12 +1,14 @@
 <script setup>
 import { onMounted, reactive, ref, toRaw } from "vue";
 import Artplayer from "./components/Artplayer.vue";
+import MonacoEditor from "./components/MonacoEditor.vue";
 import artplayerPluginDanmuku from 'artplayer-plugin-danmuku'
 
 
 let art = undefined;
-const visible = ref(true);
+let monaco = undefined;
 const labelPosition = ref('right');
+const dmFormat = ref(1)
 
 const model = reactive({
   videoUrl: "http://vjs.zencdn.net/v/oceans.mp4",
@@ -69,11 +71,12 @@ function loadDm(danmuku) {
   plugins.add(artplayerPluginDanmuku({
     // 弹幕数组
     danmuku: danmuku,
-    speed: 3,
+    fontSize: 22,
+    speed: 7,
     antiOverlap: true,
     useWorker: true, // 是否使用 web worker
     synchronousPlayback: true, // 是否同步到播放速度
-    margin: [0, "0%"],
+    margin: [10, "50%"],
   }))
 }
 
@@ -98,13 +101,21 @@ const play = function () {
   if (model.dmUrl.endsWith('.xml')) {
     loadDm(model.dmUrl);
   } else {
-    fetch(model.dmUrl, {
-      method: 'GET',
-      mode: 'no-cors'
-    })
+    fetch(model.dmUrl)
       .then(res => res.json())
       .then(json => {
-        loadDm(window.transformDm(json));
+        switch (dmFormat.value) {
+          case 1:
+            loadDm(json.danmuku.map(item => ({
+              text: item[4],
+              time: Number(item[0]),
+              color: '#fff',
+              border: false,
+              mode: item[1] === 'right' ? 0 : 1
+            })))
+            break
+        }
+        // eval(monaco.getValue())
       })
   }
 };
@@ -121,7 +132,11 @@ function getArtInstance(instance) {
   });
   art.on('url', (url) => {
     art.notice.show = '视频加载中......';
-});
+  });
+}
+
+function getMonacoInstance(instance) {
+  monaco = instance;
 }
 
 </script>
@@ -153,6 +168,18 @@ function getArtInstance(instance) {
             </lay-form-item>
           </lay-form>
         </lay-panel>
+      </lay-col>
+    </lay-row>
+    <lay-row>
+      <lay-col md="24">
+        <lay-panel style="padding: 20px;">
+          <lay-form-item label="弹幕转换" :label-position="labelPosition">
+            <lay-select v-model="dmFormat" placeholder="弹幕转换">
+              <lay-select-option :value="1" label="jplayer"></lay-select-option>
+            </lay-select>
+          </lay-form-item>
+        </lay-panel>
+        <MonacoEditor @get-instance="getMonacoInstance" />
       </lay-col>
     </lay-row>
   </lay-container>
