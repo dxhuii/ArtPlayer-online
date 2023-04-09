@@ -3,6 +3,8 @@ import { onMounted, reactive, ref, toRaw } from "vue";
 import Artplayer from "./components/Artplayer.vue";
 import MonacoEditor from "./components/MonacoEditor.vue";
 import artplayerPluginDanmuku from 'artplayer-plugin-danmuku'
+import flvjs from 'flv.js'
+import Hls from 'hls.js'
 
 
 let art = undefined;
