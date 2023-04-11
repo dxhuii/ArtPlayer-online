@@ -11,6 +11,8 @@ let art = undefined;
 let monaco = undefined;
 const labelPosition = ref('right');
 const dmFormat = ref(1)
+// 表单实例
+const layFormRef = ref(null);
 
 const model = reactive({
   videoUrl: "http://vjs.zencdn.net/v/oceans.mp4",
@@ -122,6 +124,11 @@ const play = function () {
   }
 };
 
+// 重置表单
+const reset = function () {
+  layFormRef.value.reset();
+}
+
 function getArtInstance(instance) {
   art = instance;
   art.on('ready', () => {
@@ -144,8 +151,8 @@ function getMonacoInstance(instance) {
 </script>
 
 <template>
-  <lay-notice-bar leftIcon="layui-icon-mute" rightIcon="layui-icon-close" text="事情总是会自动变化。顺其自然就好。" mode="closeable"
-    background="#ecf5ff"></lay-notice-bar>
+  <lay-notice-bar leftIcon="layui-icon-mute" rightIcon="layui-icon-close" text="支持在线播放mp4、flv、m3u8等主流格式视频。支持在线弹幕，要求bilibili网站的xml格式"
+    mode="closeable" background="#ecf5ff"></lay-notice-bar>
   <lay-container class="container">
     <lay-row>
       <lay-col md="24">
@@ -157,11 +164,11 @@ function getMonacoInstance(instance) {
     <lay-row>
       <lay-col md="24">
         <lay-panel style="padding: 20px;">
-          <lay-form :model="model">
-            <lay-form-item label="播放链接" :label-position="labelPosition" prop="videoUrl">
+          <lay-form :model="model" ref="layFormRef">
+            <lay-form-item label="播放链接" :label-position="labelPosition" prop="videoUrl" :allow-clear="true">
               <lay-input v-model="model.videoUrl"></lay-input>
             </lay-form-item>
-            <lay-form-item label="弹幕链接" :label-position="labelPosition" prop="dmUrl">
+            <lay-form-item label="弹幕链接" :label-position="labelPosition" prop="dmUrl" :allow-clear="true">
               <lay-input v-model="model.dmUrl"></lay-input>
             </lay-form-item>
             <lay-form-item>
@@ -181,7 +188,7 @@ function getMonacoInstance(instance) {
             </lay-select>
           </lay-form-item>
         </lay-panel>
-        <MonacoEditor @get-instance="getMonacoInstance" />
+        <!-- <MonacoEditor @get-instance="getMonacoInstance" /> -->
       </lay-col>
     </lay-row>
   </lay-container>
