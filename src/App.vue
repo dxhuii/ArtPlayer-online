@@ -126,7 +126,7 @@ const play = function () {
         console.error('弹幕加载失败，url:', model.dmUrl, error);
         layer.notifiy({
           title: "弹幕获取失败",
-          content: error,
+          content: error.message,
           icon: 2
         })
       })
@@ -157,10 +157,9 @@ function getArtInstance(instance) {
     art.notice.show = "加载失败：" + error + " 重连ing..." + reconnectTime
   });
   art.on('artplayerPluginDanmuku:error', (error) => {
-    console.info('加载错误', error);
     layer.notifiy({
       title: "弹幕加载失败",
-      content: error,
+      content: error.message,
       icon: 2
     })
   });
