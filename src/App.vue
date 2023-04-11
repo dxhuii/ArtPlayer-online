@@ -3,6 +3,7 @@ import { onMounted, reactive, ref, toRaw } from "vue";
 import Artplayer from "./components/Artplayer.vue";
 import MonacoEditor from "./components/MonacoEditor.vue";
 import artplayerPluginDanmuku from 'artplayer-plugin-danmuku'
+import { layer } from "@layui/layer-vue"
 import flvjs from 'flv.js'
 import Hls from 'hls.js'
 
@@ -121,6 +122,14 @@ const play = function () {
         }
         // eval(monaco.getValue())
       })
+      .catch((error) => {
+        console.error('弹幕加载失败，url:', model.dmUrl, error);
+        layer.notifiy({
+          title: "弹幕获取失败",
+          content: error,
+          icon: 2
+        })
+      })
   }
 };
 
@@ -129,6 +138,7 @@ const reset = function () {
   layFormRef.value.reset();
 }
 
+// 初始化播放器实例，绑定事件
 function getArtInstance(instance) {
   art = instance;
   art.on('ready', () => {
@@ -142,6 +152,18 @@ function getArtInstance(instance) {
   art.on('url', (url) => {
     art.notice.show = '视频加载中......';
   });
+  art.on('error', (error, reconnectTime) => {
+    console.info(error, reconnectTime);
+    art.notice.show = "加载失败：" + error + " 重连ing..." + reconnectTime
+  });
+  art.on('artplayerPluginDanmuku:error', (error) => {
+    console.info('加载错误', error);
+    layer.notifiy({
+      title: "弹幕加载失败",
+      content: error,
+      icon: 2
+    })
+  });
 }
 
 function getMonacoInstance(instance) {
@@ -151,8 +173,8 @@ function getMonacoInstance(instance) {
 </script>
 
 <template>
-  <lay-notice-bar leftIcon="layui-icon-mute" rightIcon="layui-icon-close" text="支持在线播放mp4、flv、m3u8等主流格式视频。支持在线弹幕，要求bilibili网站的xml格式"
-    mode="closeable" background="#ecf5ff"></lay-notice-bar>
+  <lay-notice-bar leftIcon="layui-icon-mute" rightIcon="layui-icon-close"
+    text="支持在线播放mp4、flv、m3u8等主流格式视频。支持在线弹幕，要求bilibili网站的xml格式" mode="closeable" background="#ecf5ff"></lay-notice-bar>
   <lay-container class="container">
     <lay-row>
       <lay-col md="24">
