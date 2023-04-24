@@ -16,8 +16,8 @@ const dmFormat = ref(1)
 const layFormRef = ref(null);
 
 const model = reactive({
-  videoUrl: localStorage.get('videoUrl'),
-  dmUrl: localStorage.get('dmUrl'),
+  videoUrl: localStorage.getItem('videoUrl'),
+  dmUrl: localStorage.getItem('dmUrl'),
 });
 
 function playFlv(video, url, art) {
