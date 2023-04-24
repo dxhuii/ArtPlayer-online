@@ -16,8 +16,8 @@ const dmFormat = ref(1)
 const layFormRef = ref(null);
 
 const model = reactive({
-  videoUrl: "http://vjs.zencdn.net/v/oceans.mp4",
-  dmUrl: "https://comment.bilibili.com/1077805228.xml",
+  videoUrl: localStorage.get('videoUrl'),
+  dmUrl: localStorage.get('dmUrl'),
 });
 
 function playFlv(video, url, art) {
@@ -89,6 +89,7 @@ const play = function () {
   if (art.url === model.videoUrl) {
     return false;
   }
+  localStorage.setItem('videoUrl', model.videoUrl)
   // 识别视频类型
   if (model.videoUrl.endsWith('.mp4')) {
     art.type = 'mp4';
@@ -103,6 +104,7 @@ const play = function () {
   if (!model.dmUrl) {
     return false;
   }
+  localStorage.setItem('dmUrl', model.dmUrl)
   if (model.dmUrl.endsWith('.xml')) {
     loadDm(model.dmUrl);
   } else {
