@@ -7,7 +7,7 @@ import { layer } from "@layui/layer-vue"
 import flvjs from 'flv.js'
 import Hls from 'hls.js'
 
-
+const urlSearchParams = new URLSearchParams(window.location.search)
 let art = undefined;
 let monaco = undefined;
 const labelPosition = ref('right');
@@ -16,8 +16,8 @@ const dmFormat = ref(1)
 const layFormRef = ref(null);
 
 const model = reactive({
-  videoUrl: localStorage.getItem('videoUrl'),
-  dmUrl: localStorage.getItem('dmUrl'),
+  videoUrl: urlSearchParams.get('vUrl') || localStorage.getItem('videoUrl'),
+  dmUrl: urlSearchParams.get('dmUrl') || localStorage.getItem('dmUrl'),
 });
 
 function playFlv(video, url, art) {
