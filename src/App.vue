@@ -97,9 +97,9 @@ const play = function () {
   if (model.videoUrl.endsWith('.flv')) {
     art.type = 'flv';
   }
-  art.pause();
   setTimeout(() => {
-    art.url = model.videoUrl;
+    art.switchUrl(model.videoUrl);
+    // art.url = model.videoUrl;
   }, 500)
   if (!model.dmUrl) {
     return false;
@@ -179,25 +179,21 @@ function getMonacoInstance(instance) {
   <lay-container class="container">
     <lay-row>
       <lay-col md="24">
-        <lay-panel>
-          <Artplayer @get-instance="getArtInstance" :option="option" :style="style" />
-        </lay-panel>
+        <Artplayer @get-instance="getArtInstance" :option="option" :style="style" />
       </lay-col>
     </lay-row>
     <lay-row>
       <lay-col md="24">
         <lay-panel style="padding: 20px;">
-          <lay-form :model="model" ref="layFormRef">
+          <lay-form :model="model" ref="layFormRef" :pane="true">
             <lay-form-item label="播放链接" :label-position="labelPosition" prop="videoUrl" :allow-clear="true">
               <lay-input v-model="model.videoUrl"></lay-input>
             </lay-form-item>
             <lay-form-item label="弹幕链接" :label-position="labelPosition" prop="dmUrl" :allow-clear="true">
               <lay-input v-model="model.dmUrl"></lay-input>
             </lay-form-item>
-            <lay-form-item>
-              <lay-button type="normal" @click="play">播放</lay-button>
-              <lay-button @click="reset">重置</lay-button>
-            </lay-form-item>
+            <lay-button type="normal" @click="play">播放</lay-button>
+            <lay-button @click="reset">重置</lay-button>
           </lay-form>
         </lay-panel>
       </lay-col>
@@ -231,32 +227,5 @@ function getMonacoInstance(instance) {
   /* position: absolute; */
   /* top: 50px; */
   /* margin: auto; */
-}
-
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
 }
 </style>
