@@ -86,9 +86,6 @@ function loadDm(danmuku) {
 }
 
 const play = function () {
-  if (art.url === model.videoUrl) {
-    return false;
-  }
   localStorage.setItem('videoUrl', model.videoUrl)
   // 识别视频类型
   if (model.videoUrl.endsWith('.mp4')) {
@@ -186,11 +183,11 @@ function getMonacoInstance(instance) {
       <lay-col md="24">
         <lay-panel style="padding: 20px;">
           <lay-form :model="model" ref="layFormRef" :pane="true">
-            <lay-form-item label="播放链接" :label-position="labelPosition" prop="videoUrl" :allow-clear="true">
-              <lay-input v-model="model.videoUrl"></lay-input>
+            <lay-form-item label="播放链接" :label-position="labelPosition" prop="videoUrl" >
+              <lay-input v-model="model.videoUrl" :allow-clear="true"></lay-input>
             </lay-form-item>
-            <lay-form-item label="弹幕链接" :label-position="labelPosition" prop="dmUrl" :allow-clear="true">
-              <lay-input v-model="model.dmUrl"></lay-input>
+            <lay-form-item label="弹幕链接" :label-position="labelPosition" prop="dmUrl" >
+              <lay-input v-model="model.dmUrl" :allow-clear="true"></lay-input>
             </lay-form-item>
             <lay-button type="normal" @click="play">播放</lay-button>
             <lay-button @click="reset">重置</lay-button>
