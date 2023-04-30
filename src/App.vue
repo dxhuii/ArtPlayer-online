@@ -144,7 +144,7 @@ const reset = function () {
 function getArtInstance(instance) {
   art = instance;
   art.on('ready', () => {
-    console.info(art.hls);
+    console.info(art.url);
     art.play();
   });
   art.on('restart', () => {
