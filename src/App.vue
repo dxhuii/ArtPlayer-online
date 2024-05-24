@@ -33,11 +33,19 @@ const playList = computed(() => {
   }
   return []
 })
+const playListLabelMap = computed(() => {
+  const map = {};
+  for (const item of playList.value) {
+    map[item.label] = item;
+  }
+  return map;
+})
 
 const model = reactive({
   videoUrl: urlSearchParams.get("vUrl") || localStorage.getItem("videoUrl"),
   dmUrl: urlSearchParams.get("dmUrl") || localStorage.getItem("dmUrl"),
 });
+const playListModel = ref();
 
 function playFlv(video, url, art) {
   if (flvjs.isSupported()) {
@@ -192,8 +200,8 @@ function getMonacoInstance(instance) {
 }
 
 const handlePlayListChange = value => {
-  model.videoUrl = value[0]
-  model.dmUrl = value[1]
+  model.videoUrl = playListLabelMap.value[value].url
+  model.dmUrl = playListLabelMap.value[value].dmUrl
   nextTick(() => {
     play()
   })
@@ -226,8 +234,8 @@ const handlePlayListChange = value => {
               </lay-form>
             </lay-tab-item>
             <lay-tab-item title="专辑" id="2">
-              <lay-select style="width: 100%;margin-bottom: 20px;" @change="handlePlayListChange">
-                  <lay-select-option v-for="(item, index) in playList" :key="index" :value="[item.url, item.dmUrl]"
+              <lay-select style="width: 100%;margin-bottom: 20px;" v-model="playListModel" @change="handlePlayListChange">
+                  <lay-select-option v-for="(item, index) in playList" :key="index" :value="item.label"
                     :label="item.label"></lay-select-option>
                 </lay-select>
                 <MonacoEditor v-model="monacoValue" language="json" />
