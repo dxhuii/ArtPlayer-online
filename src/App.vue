@@ -107,9 +107,9 @@ function loadDm(danmuku) {
       fontSize: 22,
       speed: 7,
       antiOverlap: true,
-      useWorker: true, // 是否使用 web worker
       synchronousPlayback: true, // 是否同步到播放速度
       margin: [10, "50%"],
+      emitter: false, // 是否开启弹幕发射器
     })
   );
 }
